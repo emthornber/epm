@@ -337,6 +337,37 @@ make_subpackage(const char *prodname,     /* I - Product short name */
     fclose(fp);
 
     /*
+     * Write the templates file for DPKG...
+     */
+
+    for (i = dist->num_commands, c = dist->commands; i > 0; i--, c++)
+        if (c->type == COMMAND_LITERAL && c->subpackage == subpackage &&
+            !strcmp(c->section, "templates"))
+            break;
+
+    if (i) {
+        if (Verbosity)
+            puts("Creating templates file...");
+
+        snprintf(filename, sizeof(filename), "%s/%s/DEBIAN/templates", directory, name);
+
+        if ((fp = fopen(filename, "w")) == NULL) {
+            fprintf(stderr, "epm: Unable to create template file \"%s\": %s\n", filename,
+                    strerror(errno));
+            return (1);
+        }
+
+        fchmod(fileno(fp), 0644);
+
+        for (; i > 0; i--, c++)
+            if (c->type == COMMAND_LITERAL && c->subpackage == subpackage &&
+                !strcmp(c->section, "templates"))
+                fprintf(fp, "%s\n", c->command);
+
+        fclose(fp);
+    }
+
+    /*
      * Write the preinst file for DPKG...
      */
 
