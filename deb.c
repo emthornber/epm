@@ -357,7 +357,11 @@ make_subpackage(const char *prodname,     /* I - Product short name */
             return (1);
         }
 
-        fchmod(fileno(fp), 0644);
+        fchmod(fileno(fp), 0755);
+
+        fputs("#!/bin/sh\n", fp);
+        fputs("# " EPM_VERSION "\n", fp);
+        fputs("set -e\n", fp);
 
         for (; i > 0; i--, c++)
             if (c->type == COMMAND_LITERAL && c->subpackage == subpackage &&
@@ -422,6 +426,7 @@ make_subpackage(const char *prodname,     /* I - Product short name */
 
         fputs("#!/bin/sh\n", fp);
         fputs("# " EPM_VERSION "\n", fp);
+        fputs("set -e\n", fp);
 
         for (; i > 0; i--, c++)
             if (c->type == COMMAND_PRE_INSTALL && c->subpackage == subpackage)
@@ -459,6 +464,7 @@ make_subpackage(const char *prodname,     /* I - Product short name */
 
         fputs("#!/bin/sh\n", fp);
         fputs("# " EPM_VERSION "\n", fp);
+        fputs("set -e\n", fp);
 
         for (i = dist->num_commands, c = dist->commands; i > 0; i--, c++)
             if (c->type == COMMAND_POST_INSTALL && c->subpackage == subpackage)
@@ -507,6 +513,7 @@ make_subpackage(const char *prodname,     /* I - Product short name */
 
         fputs("#!/bin/sh\n", fp);
         fputs("# " EPM_VERSION "\n", fp);
+        fputs("set -e\n", fp);
 
         for (i = dist->num_commands, c = dist->commands; i > 0; i--, c++)
             if (c->type == COMMAND_PRE_REMOVE && c->subpackage == subpackage)
@@ -548,6 +555,7 @@ make_subpackage(const char *prodname,     /* I - Product short name */
 
         fputs("#!/bin/sh\n", fp);
         fputs("# " EPM_VERSION "\n", fp);
+        fputs("set -e\n", fp);
 
         for (i = dist->num_commands, c = dist->commands; i > 0; i--, c++)
             if (c->type == COMMAND_POST_REMOVE && c->subpackage == subpackage)
