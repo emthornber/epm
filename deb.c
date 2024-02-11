@@ -337,6 +337,37 @@ make_subpackage(const char *prodname,     /* I - Product short name */
     fclose(fp);
 
     /*
+     * Write the config file for DPKG...
+     */
+
+    for (i = dist->num_commands, c = dist->commands; i > 0; i--, c++)
+        if (c->type == COMMAND_LITERAL && c->subpackage == subpackage &&
+            !strcmp(c->section, "config"))
+            break;
+
+    if (i) {
+        if (Verbosity)
+            puts("Creating config file...");
+
+        snprintf(filename, sizeof(filename), "%s/%s/DEBIAN/config", directory, name);
+
+        if ((fp = fopen(filename, "w")) == NULL) {
+            fprintf(stderr, "epm: Unable to create config file \"%s\": %s\n", filename,
+                    strerror(errno));
+            return (1);
+        }
+
+        fchmod(fileno(fp), 0644);
+
+        for (; i > 0; i--, c++)
+            if (c->type == COMMAND_LITERAL && c->subpackage == subpackage &&
+                !strcmp(c->section, "config"))
+                fprintf(fp, "%s\n", c->command);
+
+        fclose(fp);
+    }
+
+    /*
      * Write the templates file for DPKG...
      */
 
