@@ -363,10 +363,6 @@ make_subpackage(const char *prodname,     /* I - Product short name */
         fputs("# " EPM_VERSION "\n", fp);
         fputs("set -e\n", fp);
 
-        fputs("#!/bin/sh\n", fp);
-        fputs("# " EPM_VERSION "\n", fp);
-        fputs("set -e\n", fp);
-
         for (; i > 0; i--, c++)
             if (c->type == COMMAND_LITERAL && c->subpackage == subpackage &&
                 !strcmp(c->section, "config"))
