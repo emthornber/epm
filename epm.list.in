@@ -30,8 +30,8 @@ $srcdir=@srcdir@
 
 # Product information
 %product ESP Package Manager (EPM)
-%copyright 1999-2020 by Michael R Sweet, All Rights Reserved.
 %copyright 2020 by Jim Jagielski, All Rights Reserved.
+%copyright 1999-2020 by Michael R Sweet, All Rights Reserved.
 %vendor Michael R Sweet, Jim Jagielski
 %license ${srcdir}/LICENSE
 %readme ${srcdir}/README.md
