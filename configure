@@ -2203,8 +2203,8 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 ac_config_headers="$ac_config_headers config.h"
 
 
-VERSION="5.0.0"
-VERNUMBER=500
+VERSION="5.0.1rc2"
+VERNUMBER=501
 
 
 cat >>confdefs.h <<_ACEOF

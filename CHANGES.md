@@ -1,6 +1,13 @@
 Changes in EPM
 ==============
 
+Changes in EPM 5.0.1
+--------------------
+
+- Added functionality for `templates` and `changelog` files for Debian `%literal()`
+  support.
+- Updated documentation to include description of new functionality - Section 4
+
 Changes in EPM 5.0.0
 --------------------
 

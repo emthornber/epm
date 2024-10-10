@@ -99,7 +99,7 @@ Specifies the file to display as the software license.
 .TP 5
 %literal(section) <<\fIstring\fR
 Specifies format-specific literal data for packaging.
-Currently only supported for RPM and PKG packages.
+Currently only supported for DEB, RPM, and PKG packages.
 .TP 5
 %packager \fIname of packager\fR
 Specifies the name of the packager.

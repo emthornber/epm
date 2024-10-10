@@ -1271,17 +1271,45 @@ i 755 root sys foo foo.sh &quot;runlevel(02) start(50) stop(30)&quot;
 <p>Sometimes you need to include format-specific package data such as
  keywords, signing keys, and response data. The <code>%literal(section)</code>
  directive adds format-specific data to the packages you create. Literal
- data is currently only supported for RPM and PKG packages.</p>
+ data is currently only supported for DEB, RPM, and PKG packages.</p>
 <h3>Debian Literal Data</h3>
 <p>Debian packages have control files that provide metadata for each
  package. The <code>%literal(control)</code> directive can be used to
  provide this metadata:</p>
 <pre>
-%literal(control) &lt;&lt;EOF
-Section: misc
-Priority: extra
-EOF
-</pre>
+	%literal(control) &lt;&lt;EOF
+	# Source debconf library.
+	. /usr/share/debconf/confmodule
+
+	if [ ! -e ${candev} ] ; then
+		# The can0 device will only be loaded when the RPi is rebooted
+		db_set canpi-server/reboot false
+		db_input high canpi-server/reboot || true
+		db_go || true
+	fi
+	EOF
+	</pre>
+<p>Debian packages can have a template file that provide prompts for
+ user input (see previous contents for <code>%literal(control)</code>)
+ The <code>%literal(templates)</code> directive can be used to provide
+ this metadata:</p>
+<pre>
+	%literal(templates) &lt;&lt;EOF
+	Template: canpi-server/reboot Type: boolean Description: Would you like to
+	reboot to complete the package installation ?  The package installation
+	updates the device table overlay definition.  For these changes to take
+	effect the system must be restarted.  The canpi daemon is not started by the
+	package installation as the lack of /dev/can0 will cause it to fail
+	immediately.
+	EOF
+	</pre>
+<p>Debian packages should have a changelog file that lists the changes
+ to the package functionality. This file has a defined format (see <code>
+man -s 5 deb-changelog</code>) The <code>%literal(changelog)</code>
+ directive can be used to provide this data</p>
+<pre>
+	%literal(changelog) changes.md
+	</pre>
 <h3>PKG Literal Data</h3>
 <p>PKG packages support request files that are used to do batch
  installations when installation commands require user input. The <code>

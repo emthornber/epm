@@ -41,7 +41,8 @@ add_size(FILE *fpControl,       /* Control file stream */
 
     snprintf(command, sizeof(command), "du -k -s %s", directory);
     fp = popen(command, "r");
-    if (NULL != fp) {
+    if (NULL != fp)
+    {
         char size[1024];
         fscanf(fp, "%s .", size);
         fprintf(fpControl, "Installed-Size: %s\n", size);
@@ -76,7 +77,8 @@ make_deb(const char *prodname,     /* I - Product short name */
      */
     sep = (AooMode ? "_" : "-");
 
-    if (AooMode) {
+    if (AooMode)
+    {
         /*
          * Use debian default naming scheme
          */
@@ -94,8 +96,9 @@ make_deb(const char *prodname,     /* I - Product short name */
 #endif
         else if (!strcmp(platname, "ppc"))
             platname = "powerpc";
-
-    } else {
+    }
+    else
+    {
         /* Debian packages use "amd64" instead of "x86_64" for the architecture... */
         if (!strcmp(platname, "x86_64"))
             platname = "amd64";
@@ -113,7 +116,8 @@ make_deb(const char *prodname,     /* I - Product short name */
      * Build a compressed tar file to hold all of the subpackages...
      */
 
-    if (dist->num_subpackages) {
+    if (dist->num_subpackages)
+    {
         /*
          * Figure out the full name of the distribution...
          */
@@ -123,7 +127,8 @@ make_deb(const char *prodname,     /* I - Product short name */
         else
             snprintf(name, sizeof(name), "%s%s%s", prodname, sep, dist->version);
 
-        if (platname[0]) {
+        if (platname[0])
+        {
             strlcat(name, sep, sizeof(name));
             strlcat(name, platname, sizeof(name));
         }
@@ -141,14 +146,17 @@ make_deb(const char *prodname,     /* I - Product short name */
          * Archive the main package and subpackages...
          */
 
-        if (tar_package(tarfile, "deb", prodname, directory, platname, dist, NULL)) {
+        if (tar_package(tarfile, "deb", prodname, directory, platname, dist, NULL))
+        {
             tar_close(tarfile);
             return (1);
         }
 
-        for (i = 0; i < dist->num_subpackages; i++) {
+        for (i = 0; i < dist->num_subpackages; i++)
+        {
             if (tar_package(tarfile, "deb", prodname, directory, platname, dist,
-                            dist->subpackages[i])) {
+                            dist->subpackages[i]))
+            {
                 tar_close(tarfile);
                 return (1);
             }
@@ -161,7 +169,8 @@ make_deb(const char *prodname,     /* I - Product short name */
      * Remove temporary files...
      */
 
-    if (!KeepFiles && dist->num_subpackages) {
+    if (!KeepFiles && dist->num_subpackages)
+    {
         if (Verbosity)
             puts("Removing temporary distribution files...");
 
@@ -229,7 +238,8 @@ make_subpackage(const char *prodname,     /* I - Product short name */
     else
         snprintf(name, sizeof(name), "%s%s%s", prodfull, sep, dist->version);
 
-    if (platname[0]) {
+    if (platname[0])
+    {
         strlcat(name, sep, sizeof(name));
         strlcat(name, platname, sizeof(name));
     }
@@ -252,7 +262,8 @@ make_subpackage(const char *prodname,     /* I - Product short name */
 
     strlcat(filename, "/control", sizeof(filename));
 
-    if ((fp = fopen(filename, "w")) == NULL) {
+    if ((fp = fopen(filename, "w")) == NULL)
+    {
         fprintf(stderr, "epm: Unable to create control file \"%s\": %s\n", filename,
                 strerror(errno));
         return (1);
@@ -293,23 +304,29 @@ make_subpackage(const char *prodname,     /* I - Product short name */
         if (dist->descriptions[i].subpackage == subpackage)
             fprintf(fp, " %s\n", dist->descriptions[i].description);
 
-    for (j = DEPEND_REQUIRES; j <= DEPEND_PROVIDES; j++) {
+    for (j = DEPEND_REQUIRES; j <= DEPEND_PROVIDES; j++)
+    {
         for (i = dist->num_depends, d = dist->depends; i > 0; i--, d++)
             if (d->type == j && d->subpackage == subpackage)
                 break;
 
-        if (i) {
+        if (i)
+        {
             for (header = depends[j]; i > 0; i--, d++, header = ",")
-                if (d->type == j && d->subpackage == subpackage) {
+                if (d->type == j && d->subpackage == subpackage)
+                {
                     if (!strcmp(d->product, "_self"))
                         fprintf(fp, "%s %s", header, prodname);
                     else
                         fprintf(fp, "%s %s", header, d->product);
 
-                    if (d->vernumber[0] == 0) {
+                    if (d->vernumber[0] == 0)
+                    {
                         if (d->vernumber[1] < INT_MAX)
                             fprintf(fp, " (<= %s)", d->version[1]);
-                    } else {
+                    }
+                    else
+                    {
                         if (d->vernumber[1] < INT_MAX)
                             fprintf(fp, " (>= %s), %s (<= %s)", d->version[0], d->product,
                                     d->version[1]);
@@ -327,7 +344,8 @@ make_subpackage(const char *prodname,     /* I - Product short name */
             !strcmp(c->section, "control"))
             break;
 
-    if (i > 0) {
+    if (i > 0)
+    {
         for (; i > 0; i--, c++)
             if (c->type == COMMAND_LITERAL && c->subpackage == subpackage &&
                 !strcmp(c->section, "control"))
@@ -345,13 +363,15 @@ make_subpackage(const char *prodname,     /* I - Product short name */
             !strcmp(c->section, "config"))
             break;
 
-    if (i) {
+    if (i)
+    {
         if (Verbosity)
             puts("Creating config file...");
 
         snprintf(filename, sizeof(filename), "%s/%s/DEBIAN/config", directory, name);
 
-        if ((fp = fopen(filename, "w")) == NULL) {
+        if ((fp = fopen(filename, "w")) == NULL)
+        {
             fprintf(stderr, "epm: Unable to create config file \"%s\": %s\n", filename,
                     strerror(errno));
             return (1);
@@ -380,14 +400,16 @@ make_subpackage(const char *prodname,     /* I - Product short name */
             !strcmp(c->section, "templates"))
             break;
 
-    if (i) {
+    if (i)
+    {
         if (Verbosity)
             puts("Creating templates file...");
 
         snprintf(filename, sizeof(filename), "%s/%s/DEBIAN/templates", directory, name);
 
-        if ((fp = fopen(filename, "w")) == NULL) {
-            fprintf(stderr, "epm: Unable to create template file \"%s\": %s\n", filename,
+        if ((fp = fopen(filename, "w")) == NULL)
+        {
+            fprintf(stderr, "epm: Unable to create templates file \"%s\": %s\n", filename,
                     strerror(errno));
             return (1);
         }
@@ -401,6 +423,38 @@ make_subpackage(const char *prodname,     /* I - Product short name */
 
         fclose(fp);
     }
+    /*
+     * Write the changelog file for DPKG...
+     */
+
+    for (i = dist->num_commands, c = dist->commands; i > 0; i--, c++)
+        if (c->type == COMMAND_LITERAL && c->subpackage == subpackage &&
+            !strcmp(c->section, "changelog"))
+            break;
+
+    if (i)
+    {
+        if (Verbosity)
+            puts("Creating changelog file...");
+
+        snprintf(filename, sizeof(filename), "%s/%s/DEBIAN/changelog", directory, name);
+
+        if ((fp = fopen(filename, "w")) == NULL)
+        {
+            fprintf(stderr, "epm: Unable to create changelog file \"%s\": %s\n", filename,
+                    strerror(errno));
+            return (1);
+        }
+
+        fchmod(fileno(fp), 0644);
+
+        for (; i > 0; i--, c++)
+            if (c->type == COMMAND_LITERAL && c->subpackage == subpackage &&
+                !strcmp(c->section, "changelog"))
+                fprintf(fp, "%s\n", c->command);
+
+        fclose(fp);
+    }
 
     /*
      * Write the preinst file for DPKG...
@@ -410,13 +464,15 @@ make_subpackage(const char *prodname,     /* I - Product short name */
         if (c->type == COMMAND_PRE_INSTALL && c->subpackage == subpackage)
             break;
 
-    if (i) {
+    if (i)
+    {
         if (Verbosity)
             puts("Creating preinst script...");
 
         snprintf(filename, sizeof(filename), "%s/%s/DEBIAN/preinst", directory, name);
 
-        if ((fp = fopen(filename, "w")) == NULL) {
+        if ((fp = fopen(filename, "w")) == NULL)
+        {
             fprintf(stderr, "epm: Unable to create script file \"%s\": %s\n", filename,
                     strerror(errno));
             return (1);
@@ -448,13 +504,15 @@ make_subpackage(const char *prodname,     /* I - Product short name */
             if (tolower(file->type) == 'i' && file->subpackage == subpackage)
                 break;
 
-    if (i) {
+    if (i)
+    {
         if (Verbosity)
             puts("Creating postinst script...");
 
         snprintf(filename, sizeof(filename), "%s/%s/DEBIAN/postinst", directory, name);
 
-        if ((fp = fopen(filename, "w")) == NULL) {
+        if ((fp = fopen(filename, "w")) == NULL)
+        {
             fprintf(stderr, "epm: Unable to create script file \"%s\": %s\n", filename,
                     strerror(errno));
             return (1);
@@ -471,7 +529,8 @@ make_subpackage(const char *prodname,     /* I - Product short name */
                 fprintf(fp, "%s\n", c->command);
 
         for (i = dist->num_files, file = dist->files; i > 0; i--, file++)
-            if (tolower(file->type) == 'i' && file->subpackage == subpackage) {
+            if (tolower(file->type) == 'i' && file->subpackage == subpackage)
+            {
                 /*
                  * Debian's update-rc.d has changed over the years; current practice is
                  * to let update-rc.d choose the runlevels and ordering...
@@ -497,13 +556,15 @@ make_subpackage(const char *prodname,     /* I - Product short name */
             if (tolower(file->type) == 'i' && file->subpackage == subpackage)
                 break;
 
-    if (i) {
+    if (i)
+    {
         if (Verbosity)
             puts("Creating prerm script...");
 
         snprintf(filename, sizeof(filename), "%s/%s/DEBIAN/prerm", directory, name);
 
-        if ((fp = fopen(filename, "w")) == NULL) {
+        if ((fp = fopen(filename, "w")) == NULL)
+        {
             fprintf(stderr, "epm: Unable to create script file \"%s\": %s\n", filename,
                     strerror(errno));
             return (1);
@@ -539,13 +600,15 @@ make_subpackage(const char *prodname,     /* I - Product short name */
             if (tolower(file->type) == 'i' && file->subpackage == subpackage)
                 break;
 
-    if (i) {
+    if (i)
+    {
         if (Verbosity)
             puts("Creating postrm script...");
 
         snprintf(filename, sizeof(filename), "%s/%s/DEBIAN/postrm", directory, name);
 
-        if ((fp = fopen(filename, "w")) == NULL) {
+        if ((fp = fopen(filename, "w")) == NULL)
+        {
             fprintf(stderr, "epm: Unable to create script file \"%s\": %s\n", filename,
                     strerror(errno));
             return (1);
@@ -562,7 +625,8 @@ make_subpackage(const char *prodname,     /* I - Product short name */
                 fprintf(fp, "%s\n", c->command);
 
         for (i = dist->num_files, file = dist->files; i > 0; i--, file++)
-            if (tolower(file->type) == 'i' && file->subpackage == subpackage) {
+            if (tolower(file->type) == 'i' && file->subpackage == subpackage)
+            {
                 fputs("if [ purge = \"$1\" ]; then\n", fp);
                 fprintf(fp, "	update-rc.d %s remove\n", file->dst);
                 fputs("fi\n", fp);
@@ -580,7 +644,8 @@ make_subpackage(const char *prodname,     /* I - Product short name */
 
     snprintf(filename, sizeof(filename), "%s/%s/DEBIAN/conffiles", directory, name);
 
-    if ((fp = fopen(filename, "w")) == NULL) {
+    if ((fp = fopen(filename, "w")) == NULL)
+    {
         fprintf(stderr, "epm: Unable to create script file \"%s\": %s\n", filename,
                 strerror(errno));
         return (1);
@@ -594,7 +659,8 @@ make_subpackage(const char *prodname,     /* I - Product short name */
 
     fclose(fp);
 
-    if (AooMode) {
+    if (AooMode)
+    {
         /*
          * Calculate and append Installed-Size to DEBIAN/control
          */
@@ -603,7 +669,8 @@ make_subpackage(const char *prodname,     /* I - Product short name */
             puts("Calculating Installed-Size...");
 
         snprintf(filename, sizeof(filename), "%s/%s/DEBIAN/control", directory, name);
-        if ((fp = fopen(filename, "a")) == NULL) {
+        if ((fp = fopen(filename, "a")) == NULL)
+        {
             fprintf(stderr, "epm: Unable to Installed-Size to file \"%s\" - %s\n",
                     filename, strerror(errno));
             return (1);
@@ -621,7 +688,8 @@ make_subpackage(const char *prodname,     /* I - Product short name */
     if (Verbosity)
         puts("Copying temporary distribution files...");
 
-    for (i = dist->num_files, file = dist->files; i > 0; i--, file++) {
+    for (i = dist->num_files, file = dist->files; i > 0; i--, file++)
+    {
         if (file->subpackage != subpackage)
             continue;
 
@@ -639,7 +707,8 @@ make_subpackage(const char *prodname,     /* I - Product short name */
          * Copy the file or make the directory or make the symlink as needed...
          */
 
-        switch (tolower(file->type)) {
+        switch (tolower(file->type))
+        {
         case 'c':
         case 'f':
             snprintf(filename, sizeof(filename), "%s/%s%s", directory, name, file->dst);
@@ -689,17 +758,20 @@ make_subpackage(const char *prodname,     /* I - Product short name */
     if (Verbosity)
         printf("Building Debian %s binary distribution...\n", name);
 
-    if (geteuid() && !run_command(NULL, "fakeroot --version")) {
+    if (geteuid() && !run_command(NULL, "fakeroot --version"))
+    {
         if (run_command(directory, "fakeroot dpkg --build %s", name))
             return (1);
-    } else if (run_command(directory, "dpkg --build %s", name))
+    }
+    else if (run_command(directory, "dpkg --build %s", name))
         return (1);
 
     /*
      * Remove temporary files...
      */
 
-    if (!KeepFiles) {
+    if (!KeepFiles)
+    {
         if (Verbosity)
             printf("Removing temporary %s distribution files...\n", name);
 
