@@ -17,7 +17,7 @@ dnl GNU General Public License for more details.
 dnl
 
 AC_INIT([EPM],[5.0.1rc2],[https://github.com/jimjag/epm/issues],[epm],[https://github.com/jimjag/epm])
-AC_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS([config.h])
 
 dnl Version number...
 VERSION="AC_PACKAGE_VERSION"
@@ -125,7 +125,15 @@ if test "$uname" = "IRIX"; then
 fi
 
 dnl Checks for header files.
-AC_HEADER_STDC
+m4_warn([obsolete],
+[The preprocessor macro `STDC_HEADERS' is obsolete.
+  Except in unusual embedded environments, you can safely include all
+  ISO C90 headers unconditionally.])dnl
+# Autoupdate added the next two lines to ensure that your configure
+# script's behavior did not change.  They are probably safe to remove.
+AC_CHECK_INCLUDES_DEFAULT
+AC_PROG_EGREP
+
 AC_HEADER_DIRENT
 AC_CHECK_HEADER(strings.h,AC_DEFINE(HAVE_STRINGS_H))
 AC_CHECK_HEADER(sys/mount.h,AC_DEFINE(HAVE_SYS_MOUNT_H))
@@ -207,7 +215,7 @@ if test -n "$GCC"; then
 	AC_MSG_CHECKING(if GCC supports -Wno-format-truncation)
 	OLDCFLAGS="$CFLAGS"
 	CFLAGS="$CFLAGS -Werror -Wno-format-truncation"
-	AC_TRY_COMPILE(,,[
+	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[]])],[
 		CFLAGS="$OLDCFLAGS -Wno-format-truncation"
 		CXXFLAGS="$CXXFLAGS -Wno-format-truncation"
 		AC_MSG_RESULT(yes)],[
@@ -218,20 +226,16 @@ if test -n "$GCC"; then
 	AC_MSG_CHECKING(if GCC supports -fno-rtti)
 	OLDCFLAGS="$CFLAGS"
 	CFLAGS="$CFLAGS -fno-rtti"
-	AC_TRY_COMPILE(,,
-		CXXFLAGS="$CXXFLAGS -fno-rtti"
-		AC_MSG_RESULT(yes),
-		AC_MSG_RESULT(no))
+	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[]])],[CXXFLAGS="$CXXFLAGS -fno-rtti"
+		AC_MSG_RESULT(yes)],[AC_MSG_RESULT(no)])
 	CFLAGS="$OLDCFLAGS"
 
 	# See if GCC supports -fno-exceptions...
 	AC_MSG_CHECKING(if GCC supports -fno-exceptions)
 	OLDCFLAGS="$CFLAGS"
 	CFLAGS="$CFLAGS -fno-exceptions"
-	AC_TRY_COMPILE(,,
-		CXXFLAGS="$CXXFLAGS -fno-exceptions"
-		AC_MSG_RESULT(yes),
-		AC_MSG_RESULT(no))
+	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[]])],[CXXFLAGS="$CXXFLAGS -fno-exceptions"
+		AC_MSG_RESULT(yes)],[AC_MSG_RESULT(no)])
 	CFLAGS="$OLDCFLAGS"
 
 	# See if we are running HP-UX or Solaris; if so, try the
@@ -242,10 +246,8 @@ if test -n "$GCC"; then
 
 			OLDCFLAGS="$CFLAGS"
 			CFLAGS="$CFLAGS -fpermissive"
-			AC_TRY_COMPILE(,,
-				CXXFLAGS="$CXXFLAGS -fpermissive"
-				AC_MSG_RESULT(yes),
-				AC_MSG_RESULT(no))
+			AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[]])],[CXXFLAGS="$CXXFLAGS -fpermissive"
+				AC_MSG_RESULT(yes)],[AC_MSG_RESULT(no)])
 			CFLAGS="$OLDCFLAGS"
 			;;
 
@@ -421,4 +423,5 @@ else
 fi
 
 dnl Output the makefile, list file, and config header...
-AC_OUTPUT(Makefile epm.list doc/Makefile)
+AC_CONFIG_FILES([Makefile epm.list doc/Makefile])
+AC_OUTPUT
