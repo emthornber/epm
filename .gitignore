@@ -5,6 +5,7 @@
 /.project
 /.cproject
 /.idea
+/.clang_format
 
 # Targets build by the configure phase
 /Makefile
@@ -12,6 +13,7 @@
 /config.h
 /config.log
 /config.status
+/configure~
 /doc/Makefile
 
 # Tool(s) built to facilitate the building of the product
